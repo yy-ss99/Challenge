@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 
-class MainViewController: UIViewController {
+class HomeViewController: UIViewController {
     let disposeBag = DisposeBag()
     override func viewDidLoad() {
         super.viewDidLoad()

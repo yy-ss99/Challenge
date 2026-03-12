@@ -26,8 +26,6 @@ final class NetworkManager {
                 return Disposables.create()
             }
             
-            let urlRequest = URLRequest(url: url)
-            
             session.dataTask(with: URLRequest(url: url)) { data, response, error in
                 if let error = error {
                     observe(.failure(error))
