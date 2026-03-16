@@ -20,6 +20,7 @@ final class NetworkManager {
     
     func fetch<T: Decodable>(endpoint: ITunesEndpoint) -> Single<T> {
         let session = URLSession(configuration: .default)
+        
         return Single.create { observe in
             guard let url = endpoint.url else {
                 observe(.failure(NetworkError.invalidURL))

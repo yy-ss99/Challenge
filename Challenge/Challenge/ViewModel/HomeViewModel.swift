@@ -12,6 +12,7 @@ import RxCocoa
 // 접근제한자 적절히 쓰기
 
 final class HomeViewModel {
+    private let disposeBag = DisposeBag()
     
     struct Input {
         
@@ -21,9 +22,7 @@ final class HomeViewModel {
         
     }
     
-    private let disposeBag = DisposeBag()
-    
-    func transform(input: Input) { // return Output??
+    func transform(input: Input) { // return Output
         
     }
 }

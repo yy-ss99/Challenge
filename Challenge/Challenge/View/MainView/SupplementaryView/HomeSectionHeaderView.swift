@@ -9,7 +9,6 @@ import SnapKit
 import Then
 
 final class HomeSectionHeaderView: UICollectionReusableView {
-    
     static let identifier = "HomeSectionHeaderView"
     
     let titleLabel = UILabel().then {

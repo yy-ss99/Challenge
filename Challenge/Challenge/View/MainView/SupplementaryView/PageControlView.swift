@@ -24,7 +24,7 @@ final class PageControlView: UICollectionReusableView {
         pageControl.numberOfPages = 3
         pageControl.currentPage = 0
         pageControl.pageIndicatorTintColor = .lightGray
-        pageControl.currentPageIndicatorTintColor = .black
+        pageControl.currentPageIndicatorTintColor = .gray
         pageControl.isUserInteractionEnabled = false
     }
     
