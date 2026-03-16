@@ -10,29 +10,6 @@ import UIKit
 import RxSwift
 import SnapKit
 
-enum HomeSection: Int, CaseIterable {
-    case featuredAlbum
-    case popularSongs
-    case recommendedSongs
-    case popularAlbums
-    case newAlbums
-    
-    var title: String {
-        switch self {
-        case .featuredAlbum:
-            return "Featured"
-        case .popularSongs:
-            return "Popular Songs"
-        case .recommendedSongs:
-            return "Recommended"
-        case .popularAlbums:
-            return "Popular Albums"
-        case .newAlbums:
-            return "New Albums"
-        }
-    }
-}
-
 final class HomeView: UIView {
     var changeToCurrentPage: ((Int, Int) -> Void)?
     
@@ -101,7 +78,7 @@ final class HomeView: UIView {
             case .popularSongs, .recommendedSongs:
                 return self.makeSongListSection(sectionIndex: sectionIndex, environment: environment)
                 
-            case .popularAlbums, .newAlbums:
+            case .lofiAlbums, .happyPopAlbums:
                 return self.makeAlbumCoverSection(environment: environment)
             }
         }
@@ -170,9 +147,10 @@ extension HomeView {
         section.orthogonalScrollingBehavior = .groupPaging
         
         section.interGroupSpacing = spacing
-        section.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 0, bottom: 28, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 8, bottom: 10, trailing: 8)
         section.boundarySupplementaryItems = [makeHeaderItem(), makePageControlItem()]
         
+        // 페이지 컨트롤 설정
         section.visibleItemsInvalidationHandler = { [weak self] _, offset, environment in
             guard let self else { return }
             
