@@ -34,6 +34,8 @@ enum HomeSection: Int, CaseIterable {
 }
 
 final class HomeView: UIView {
+    var changeToCurrentPage: ((Int, Int) -> Void)?
+    
     lazy var collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: makeLayout()
@@ -97,7 +99,7 @@ final class HomeView: UIView {
                 return self.makeFeaturedAlbumSection(environment: environment)
                 
             case .popularSongs, .recommendedSongs:
-                return self.makeSongListSection(environment: environment)
+                return self.makeSongListSection(sectionIndex: sectionIndex, environment: environment)
                 
             case .popularAlbums, .newAlbums:
                 return self.makeAlbumCoverSection(environment: environment)
@@ -138,11 +140,11 @@ extension HomeView {
         return section
     }
     
-    private func makeSongListSection(environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+    private func makeSongListSection(sectionIndex: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         let spacing: CGFloat = 8
         
         let containerSize = environment.container.effectiveContentSize
-        let itemWidthSize = (containerSize.width - spacing * 5)
+        let itemWidthSize = (containerSize.width - spacing * 2)
         
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .absolute(itemWidthSize),
@@ -169,10 +171,16 @@ extension HomeView {
         
         section.interGroupSpacing = spacing
         section.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 0, bottom: 28, trailing: 0)
-        section.boundarySupplementaryItems = [
-            makeHeaderItem(),
-            makePageControlItem()
-        ]
+        section.boundarySupplementaryItems = [makeHeaderItem(), makePageControlItem()]
+        
+        section.visibleItemsInvalidationHandler = { [weak self] _, offset, environment in
+            guard let self else { return }
+            
+            let pageWidth = itemWidthSize + spacing * 2
+            let page = Int(round(offset.x / pageWidth))
+            
+            self.changeToCurrentPage?(sectionIndex, page)
+        }
         
         return section
     }

@@ -32,6 +32,7 @@ final class HomeViewController: UIViewController {
         
         configure()
         makeDummyData()
+        sendCurrentPageForPageControl()
     }
     
     func bindViewModel() {
@@ -44,6 +45,21 @@ final class HomeViewController: UIViewController {
         
         homeView.snp.makeConstraints {
             $0.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    func sendCurrentPageForPageControl() {
+        homeView.changeToCurrentPage = { [weak self] section, page in
+            guard let self else { return }
+            
+            let indexPath = IndexPath(item: 0, section: section)
+            
+            if let footer = self.homeView.collectionView.supplementaryView(
+                forElementKind: PageControlView.kind,
+                at: indexPath
+            ) as? PageControlView {
+                footer.pageControl.currentPage = page
+            }
         }
     }
 }
@@ -93,20 +109,35 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        viewForSupplementaryElementOfKind kind: String,
-        at indexPath: IndexPath
-    ) -> UICollectionReusableView {
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        let header = collectionView.dequeueReusableSupplementaryView(
-            ofKind: kind,
-            withReuseIdentifier: HomeSectionHeaderView.identifier,
-            for: indexPath
-        ) as! HomeSectionHeaderView
+        if kind == UICollectionView.elementKindSectionHeader {
+            let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: HomeSectionHeaderView.identifier,
+                for: indexPath
+            ) as! HomeSectionHeaderView
+            
+            if let section = HomeSection(rawValue: indexPath.section) {
+                header.titleLabel.text = section.title
+            }
+            
+            return header
+        }
         
-        header.titleLabel.text = sections[indexPath.section].type.title
-        return header
+        if kind == PageControlView.kind {
+            let footer = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: PageControlView.identifier,
+                for: indexPath
+            ) as! PageControlView
+            
+            footer.pageControl.numberOfPages = 3
+            footer.pageControl.currentPage = 0
+            return footer
+        }
+        
+        return UICollectionReusableView()
     }
     
     private func makeDummyData() {
