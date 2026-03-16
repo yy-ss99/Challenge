@@ -16,19 +16,25 @@ struct HomeSectionModel {
     let items: [MusicItem]
 }
 
+//UISearchBar 추가
+//검색 시작 시 SearchResultViewController를 push 한다
+//나중에 RxSwift로 검색어를 VM에 넘긴다
+
 final class HomeViewController: UIViewController {
-    
     private let homeView = HomeView()
     private let disposeBag = DisposeBag()
+    private let searchBar = UISearchBar()
     
     private var sections: [HomeSectionModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         navigationItem.title = "Music"
         
         homeView.collectionView.delegate = self
         homeView.collectionView.dataSource = self
+        searchBar.delegate = self
         
         configure()
         makeDummyData()
@@ -37,14 +43,23 @@ final class HomeViewController: UIViewController {
     
     func bindViewModel() {
         // 뷰모델이 흘리는 정보 구독하기
-        
     }
     
     func configure() {
         view.addSubview(homeView)
+        view.addSubview(searchBar)
+        searchBar.placeholder = "영화,팟캐스트 검색"
+        searchBar.searchBarStyle = .minimal
+        
+        searchBar.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
+        }
         
         homeView.snp.makeConstraints {
-            $0.edges.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(searchBar.snp.bottom)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
         }
     }
     
@@ -64,6 +79,13 @@ final class HomeViewController: UIViewController {
     }
 }
 
+extension HomeViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        // 다음 화면 push 해주기
+    }
+}
+
 extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -74,10 +96,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         sections[section].items.count
     }
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let section = sections[indexPath.section]
         let item = section.items[indexPath.item]
@@ -99,7 +118,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             cell.configure(with: item)
             return cell
             
-        case .popularAlbums, .newAlbums:
+        case .lofiAlbums, .happyPopAlbums:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: AlbumCoverCell.identifier,
                 for: indexPath
@@ -159,12 +178,12 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             ),
             
             HomeSectionModel(
-                type: .popularAlbums,
+                type: .lofiAlbums,
                 items: MusicItem.dummy
             ),
             
             HomeSectionModel(
-                type: .newAlbums,
+                type: .happyPopAlbums,
                 items: MusicItem.dummy
             )
         ]
