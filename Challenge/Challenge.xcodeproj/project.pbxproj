@@ -10,6 +10,9 @@
 		0A6517C52F625C8B002A90AC /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 0A6517C42F625C8B002A90AC /* RxCocoa */; };
 		0A6517C72F625C8B002A90AC /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 0A6517C62F625C8B002A90AC /* RxRelay */; };
 		0A6517C92F625C8B002A90AC /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0A6517C82F625C8B002A90AC /* RxSwift */; };
+		0A6517E32F62D1C0002A90AC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0A6517E22F62D1C0002A90AC /* SnapKit */; };
+		0A6517E62F62D1CD002A90AC /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 0A6517E52F62D1CD002A90AC /* Then */; };
+		0A6517E92F62D1E1002A90AC /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 0A6517E82F62D1E1002A90AC /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,7 +45,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A6517E92F62D1E1002A90AC /* Kingfisher in Frameworks */,
+				0A6517E62F62D1CD002A90AC /* Then in Frameworks */,
 				0A6517C92F625C8B002A90AC /* RxSwift in Frameworks */,
+				0A6517E32F62D1C0002A90AC /* SnapKit in Frameworks */,
 				0A6517C72F625C8B002A90AC /* RxRelay in Frameworks */,
 				0A6517C52F625C8B002A90AC /* RxCocoa in Frameworks */,
 			);
@@ -90,6 +96,9 @@
 				0A6517C42F625C8B002A90AC /* RxCocoa */,
 				0A6517C62F625C8B002A90AC /* RxRelay */,
 				0A6517C82F625C8B002A90AC /* RxSwift */,
+				0A6517E22F62D1C0002A90AC /* SnapKit */,
+				0A6517E52F62D1CD002A90AC /* Then */,
+				0A6517E82F62D1E1002A90AC /* Kingfisher */,
 			);
 			productName = Challenge;
 			productReference = 0A6517742F618CB2002A90AC /* Challenge.app */;
@@ -121,6 +130,9 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				0A6517C32F625C8B002A90AC /* XCRemoteSwiftPackageReference "RxSwift" */,
+				0A6517E12F62D1C0002A90AC /* XCRemoteSwiftPackageReference "SnapKit" */,
+				0A6517E42F62D1CD002A90AC /* XCRemoteSwiftPackageReference "Then" */,
+				0A6517E72F62D1E1002A90AC /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0A6517752F618CB2002A90AC /* Products */;
@@ -364,6 +376,30 @@
 				minimumVersion = 6.10.2;
 			};
 		};
+		0A6517E12F62D1C0002A90AC /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		0A6517E42F62D1CD002A90AC /* XCRemoteSwiftPackageReference "Then" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/devxoul/Then";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		0A6517E72F62D1E1002A90AC /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.8.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -381,6 +417,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0A6517C32F625C8B002A90AC /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
+		};
+		0A6517E22F62D1C0002A90AC /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A6517E12F62D1C0002A90AC /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		0A6517E52F62D1CD002A90AC /* Then */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A6517E42F62D1CD002A90AC /* XCRemoteSwiftPackageReference "Then" */;
+			productName = Then;
+		};
+		0A6517E82F62D1E1002A90AC /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A6517E72F62D1E1002A90AC /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
