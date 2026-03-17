@@ -43,7 +43,10 @@ final class AlbumCoverCell: UICollectionViewCell {
     }
     
     func configure(with item: MusicItem) {
-        let imageURL = "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/b7/d7/f7/b7d7f7f9-c428-ceda-59da-9ab0b112ca88/5059460232280.jpg/100x100bb.jpg"
-        albumCoverImage.kf.setImage(with: URL(string: imageURL))
+        if let imageURL = item.artworkUrl100 {
+            albumCoverImage.kf.setImage(with: URL(string: imageURL))
+        } else {
+            albumCoverImage.image = UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
+        }
     }
 }

@@ -40,8 +40,11 @@ final class AlbumCardCell: UICollectionViewCell {
         titleLabel.text = item.collectionName ?? "앨범 제목"
         artistLabel.text = item.artistName ?? "아티스트"
         
-        let imageURL = "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/b7/d7/f7/b7d7f7f9-c428-ceda-59da-9ab0b112ca88/5059460232280.jpg/100x100bb.jpg"
-        albumImageView.kf.setImage(with: URL(string: imageURL))
+        if let imageURL = item.artworkUrl100 {
+            albumImageView.kf.setImage(with: URL(string: imageURL))
+        } else {
+            albumImageView.image = UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
+        }
     }
     
     func configureLayout() {

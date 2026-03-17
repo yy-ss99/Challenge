@@ -86,10 +86,10 @@ final class SongListCell: UICollectionViewCell {
     func configure(with item: MusicItem) {
         trackNameLabel.text = item.trackName ?? "노래 제목 없음"
         artistLabel.text = item.artistName ?? "아티스트"
-        let imageURL = "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/b7/d7/f7/b7d7f7f9-c428-ceda-59da-9ab0b112ca88/5059460232280.jpg/100x100bb.jpg"
-        albumImageView.kf.setImage(with: URL(string: imageURL))
-        
-        //trackNameLabel.text = "노래 제목"
-        //artistLabel.text = "아티스트"
+        if let imageURL = item.artworkUrl100 {
+            albumImageView.kf.setImage(with: URL(string: imageURL))
+        } else {
+            albumImageView.image = UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
+        }
     }
 }
