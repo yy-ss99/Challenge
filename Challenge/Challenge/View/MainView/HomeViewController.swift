@@ -56,9 +56,14 @@ final class HomeViewController: UIViewController {
         
         // 로딩 상태변경 받음
         output.isLoading
-            .drive(onNext: { isLoading in
-                print("로딩")
-            }).disposed(by: disposeBag)
+            .drive(with: self) { homeVC, isLoading in
+                if isLoading {
+                    homeVC.homeView.showLoading()
+                } else {
+                    homeVC.homeView.hideLoading()
+                }
+            }
+            .disposed(by: disposeBag)
         
         //에러 메세지 처리 - Signal은 보통 emit으로 구독
         output.errorMessage

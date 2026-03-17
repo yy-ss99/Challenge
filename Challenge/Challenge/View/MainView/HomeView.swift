@@ -16,6 +16,9 @@ final class HomeView: UIView {
             frame: .zero,
             collectionViewLayout: makeLayout()
         )
+    
+    private let loadingBackgroundView = UIView()
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -33,6 +36,35 @@ final class HomeView: UIView {
         collectionView.backgroundColor = .systemBackground
         registerCells()
         registerSupplementaryViews()
+        configureLoadingView()
+    }
+    
+    func configureLoadingView() {
+        addSubview(loadingBackgroundView)
+        
+        loadingBackgroundView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        loadingBackgroundView.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.8)
+        loadingBackgroundView.isHidden = true
+        
+        loadingBackgroundView.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints {
+            $0.center.equalToSuperview()
+        }
+        
+        activityIndicator.hidesWhenStopped = true
+    }
+    
+    func showLoading() {
+        loadingBackgroundView.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    func hideLoading() {
+        loadingBackgroundView.isHidden = true
+        activityIndicator.stopAnimating()
     }
     
     private func registerCells() {
