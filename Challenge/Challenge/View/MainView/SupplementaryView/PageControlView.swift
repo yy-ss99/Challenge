@@ -8,8 +8,7 @@ import UIKit
 import SnapKit
 
 final class PageControlView: UICollectionReusableView {
-    static let identifier = "PageControlView"
-    static let kind = "PageControlView-kind"
+    static let kind = "PageControlViewKind"
     
     let pageControl = UIPageControl()
     

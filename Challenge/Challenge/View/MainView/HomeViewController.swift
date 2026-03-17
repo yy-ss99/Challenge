@@ -136,32 +136,17 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         switch section.type {
         case .featuredAlbum:
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: AlbumCardCell.identifier,
-                for: indexPath
-            ) as? AlbumCardCell else {
-                return UICollectionViewCell()
-            }
+            let cell: AlbumCardCell = collectionView.dequeueReusableCell(for: indexPath)
             cell.configure(with: item)
             return cell
             
         case .yhSongs, .tySongs:
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: SongListCell.identifier,
-                for: indexPath
-            ) as? SongListCell else {
-                return UICollectionViewCell()
-            }
+            let cell: SongListCell = collectionView.dequeueReusableCell(for: indexPath)
             cell.configure(with: item)
             return cell
             
         case .lofiAlbums, .happyPopAlbums:
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: AlbumCoverCell.identifier,
-                for: indexPath
-            ) as? AlbumCoverCell else {
-                return UICollectionViewCell()
-            }
+            let cell: AlbumCoverCell = collectionView.dequeueReusableCell(for: indexPath)
             cell.configure(with: item)
             return cell
         }
@@ -170,13 +155,10 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         if kind == UICollectionView.elementKindSectionHeader {
-            guard let header = collectionView.dequeueReusableSupplementaryView(
+            let header: HomeSectionHeaderView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
-                withReuseIdentifier: HomeSectionHeaderView.identifier,
                 for: indexPath
-            ) as? HomeSectionHeaderView else {
-                return UICollectionReusableView()
-            }
+            )
             
             if let section = HomeSection(rawValue: indexPath.section) {
                 header.titleLabel.text = section.title
@@ -186,19 +168,48 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
         
         if kind == PageControlView.kind {
-            guard let footer = collectionView.dequeueReusableSupplementaryView(
+            let footer: PageControlView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
-                withReuseIdentifier: PageControlView.identifier,
                 for: indexPath
-            ) as? PageControlView else {
-                return UICollectionReusableView()
-            }
-            
+            )
+                    
             footer.pageControl.numberOfPages = 3
             footer.pageControl.currentPage = 0
             return footer
         }
         
         return UICollectionReusableView()
+    }
+}
+// 오류 처리 extension으로 따로 처리
+extension UICollectionView {
+    func dequeueReusableCell<T: UICollectionViewCell>(for indexPath: IndexPath) -> T {
+        guard let cell = dequeueReusableCell(
+            withReuseIdentifier: String(describing: T.self),
+            for: indexPath
+        ) as? T else {
+            fatalError("❌❌❌ \(T.self) cell dequeue 실패")
+        }
+        return cell
+    }
+    
+    func dequeueReusableSupplementaryView<T: UICollectionReusableView>(
+        ofKind kind: String,
+        for indexPath: IndexPath
+    ) -> T {
+        guard let view = dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: T.identifier,
+            for: indexPath
+        ) as? T else {
+            fatalError("❌❌❌ \(T.self) supplementary view dequeue 실패")
+        }
+        return view
+    }
+}
+// 셀 identifier를 클래스 이름으로 자동화(셀은 리유저블 뷰를 상속받아서 따로 해줄필요없음)
+extension UICollectionReusableView {
+    static var identifier: String {
+        String(describing: self)
     }
 }

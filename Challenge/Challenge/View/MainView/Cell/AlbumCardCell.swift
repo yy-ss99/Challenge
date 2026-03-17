@@ -10,9 +10,6 @@ import Then
 import Kingfisher
 
 final class AlbumCardCell: UICollectionViewCell {
-    
-    static let identifier = "AlbumCardCell"
-    
     private let cardView = UIView()
     private let albumImageView = UIImageView()
     private let dimView = UIView()
@@ -39,12 +36,15 @@ final class AlbumCardCell: UICollectionViewCell {
     func configure(with item: MusicItem) {
         titleLabel.text = item.collectionName ?? "앨범 제목"
         artistLabel.text = item.artistName ?? "아티스트"
-        if let imageURL = item.artworkUrl100 {
-            let highQualityURL = imageURL.replacingOccurrences(of: "100x100" , with: "500x500")
-            albumImageView.kf.setImage(with: URL(string: highQualityURL))
-        } else {
-            albumImageView.image = UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
-        }
+        // map으로 값 바꾸고 flatMap로 URL(string: $0)하면 옵셔널 값이라 옵셔널 벗기기 - nil일 경우 기본 이미지 보여줌
+        let url = item.artworkUrl100
+            .map { $0.replacingOccurrences(of: "100x100", with: "500x500") }
+            .flatMap { URL(string: $0) }
+
+        albumImageView.kf.setImage(
+            with: url,
+            placeholder: UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
+        )
     }
     
     func configureLayout() {

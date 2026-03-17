@@ -10,9 +10,6 @@ import Then
 import Kingfisher
 
 final class SongListCell: UICollectionViewCell {
-    
-    static let identifier = "SongListCell"
-    
     let albumImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
@@ -86,10 +83,14 @@ final class SongListCell: UICollectionViewCell {
     func configure(with item: MusicItem) {
         trackNameLabel.text = item.trackName ?? "노래 제목 없음"
         artistLabel.text = item.artistName ?? "아티스트"
-        if let imageURL = item.artworkUrl100 {
-            albumImageView.kf.setImage(with: URL(string: imageURL))
-        } else {
-            albumImageView.image = UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
-        }
+        
+        // kf가 nil처리를 해주기 떄문에 (kf.setImage(with: nil)가능)
+        // String이 있으면 URL로 -> 없거나 실패하면 nil
+        let url = item.artworkUrl100.flatMap { URL(string: $0) }
+
+        albumImageView.kf.setImage(
+            with: url,
+            placeholder: UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
+        )
     }
 }
