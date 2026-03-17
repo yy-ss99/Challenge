@@ -5,7 +5,6 @@
 //  Created by Yeseul Jang on 3/12/26.
 //
 
-// TODO: 리스트셀 여백 수정하기
 import UIKit
 import RxSwift
 import SnapKit
@@ -75,7 +74,7 @@ final class HomeView: UIView {
             case .featuredAlbum:
                 return self.makeFeaturedAlbumSection(environment: environment)
                 
-            case .popularSongs, .recommendedSongs:
+            case .YHSongs, .TYSongs:
                 return self.makeSongListSection(sectionIndex: sectionIndex, environment: environment)
                 
             case .lofiAlbums, .happyPopAlbums:

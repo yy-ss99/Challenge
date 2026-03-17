@@ -10,12 +10,6 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-
-struct HomeSectionModel {
-    let type: HomeSection
-    let items: [MusicItem]
-}
-
 //UISearchBar 추가
 //검색 시작 시 SearchResultViewController를 push 한다
 //나중에 RxSwift로 검색어를 VM에 넘긴다
@@ -24,6 +18,8 @@ final class HomeViewController: UIViewController {
     private let homeView = HomeView()
     private let disposeBag = DisposeBag()
     private let searchBar = UISearchBar()
+    
+    private let viewModel = HomeViewModel()
     
     private var sections: [HomeSectionModel] = []
     
@@ -37,12 +33,44 @@ final class HomeViewController: UIViewController {
         searchBar.delegate = self
         
         configure()
-        makeDummyData()
+        bindViewModel()
         sendCurrentPageForPageControl()
     }
     
     func bindViewModel() {
-        // 뷰모델이 흘리는 정보 구독하기
+        // just로 Void를 한번만 방출해서 뷰가 로드됨을 알림
+        let input = HomeViewModel.Input(
+            viewDidLoad: Observable.just(())
+        )
+        
+        // 아웃풋 만들기
+        let output = viewModel.transform(input: input)
+        
+        //섹션데이터를 바인딩 해줌 - 각 섹션에 맞게 넘김
+        output.sections
+            .drive(with: self) { homeVC, sections in
+                homeVC.sections = sections
+                homeVC.homeView.collectionView.reloadData()
+            }
+            .disposed(by: disposeBag)
+        
+        // 로딩 상태변경 받음
+        output.isLoading
+            .drive(onNext: { isLoading in
+                print("로딩")
+            }).disposed(by: disposeBag)
+        
+        //에러 메세지 처리 - Signal은 보통 emit으로 구독
+        output.errorMessage
+            .emit(with: self) { owner, message in
+                let alert = UIAlertController(
+                    title: "에러",
+                    message: message,
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "확인", style: .default))
+                owner.present(alert, animated: true)
+            }.disposed(by: disposeBag)
     }
     
     func configure() {
@@ -110,7 +138,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             cell.configure(with: item)
             return cell
             
-        case .popularSongs, .recommendedSongs:
+        case .YHSongs, .TYSongs:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: SongListCell.identifier,
                 for: indexPath
@@ -168,12 +196,12 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             ),
             
             HomeSectionModel(
-                type: .popularSongs,
+                type: .YHSongs,
                 items: MusicItem.dummy
             ),
             
             HomeSectionModel(
-                type: .recommendedSongs,
+                type: .TYSongs,
                 items: MusicItem.dummy
             ),
             
