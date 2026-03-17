@@ -44,7 +44,8 @@ final class AlbumCoverCell: UICollectionViewCell {
     
     func configure(with item: MusicItem) {
         if let imageURL = item.artworkUrl100 {
-            albumCoverImage.kf.setImage(with: URL(string: imageURL))
+            let highQualityURL = imageURL.replacingOccurrences(of: "100x100" , with: "500x500")
+            albumCoverImage.kf.setImage(with: URL(string: highQualityURL))
         } else {
             albumCoverImage.image = UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
         }

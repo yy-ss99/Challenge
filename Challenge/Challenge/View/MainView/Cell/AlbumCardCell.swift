@@ -39,9 +39,9 @@ final class AlbumCardCell: UICollectionViewCell {
     func configure(with item: MusicItem) {
         titleLabel.text = item.collectionName ?? "앨범 제목"
         artistLabel.text = item.artistName ?? "아티스트"
-        
         if let imageURL = item.artworkUrl100 {
-            albumImageView.kf.setImage(with: URL(string: imageURL))
+            let highQualityURL = imageURL.replacingOccurrences(of: "100x100" , with: "500x500")
+            albumImageView.kf.setImage(with: URL(string: highQualityURL))
         } else {
             albumImageView.image = UIImage(systemName: "photo.trianglebadge.exclamationmark.fill")
         }
