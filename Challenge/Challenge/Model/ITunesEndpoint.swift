@@ -9,7 +9,7 @@ import Foundation
 enum ITunesEndpoint {
     case kpopAlbums
     case popAlbums
-    case younhaSongs
+    case yhSongs
     case tySongs
     case lofiChillAlbums
     case happyPopAlbums
@@ -39,7 +39,7 @@ enum ITunesEndpoint {
                 URLQueryItem(name: "country", value: "KR")
             ]
             // 윤하 노래 가져오기
-        case .younhaSongs:
+        case .yhSongs:
             return [
                 URLQueryItem(name: "term", value: "윤하"),
                 URLQueryItem(name: "media", value: "music"),

@@ -8,8 +8,8 @@ import Foundation
 
 enum HomeSection: Int, CaseIterable {
     case featuredAlbum
-    case popularSongs
-    case recommendedSongs
+    case YHSongs
+    case TYSongs
     case lofiAlbums
     case happyPopAlbums
     
@@ -17,9 +17,9 @@ enum HomeSection: Int, CaseIterable {
         switch self {
         case .featuredAlbum:
             return "#Kpop"
-        case .popularSongs:
+        case .YHSongs:
             return "인기 급상승 가수"
-        case .recommendedSongs:
+        case .TYSongs:
             return "이 노래 어떠세요?"
         case .lofiAlbums:
             return "lofi Music"
