@@ -143,7 +143,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             cell.configure(with: item)
             return cell
             
-        case .YHSongs, .TYSongs:
+        case .yhSongs, .tySongs:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: SongListCell.identifier,
                 for: indexPath
