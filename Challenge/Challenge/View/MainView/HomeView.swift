@@ -106,7 +106,7 @@ final class HomeView: UIView {
             case .featuredAlbum:
                 return self.makeFeaturedAlbumSection(environment: environment)
                 
-            case .YHSongs, .TYSongs:
+            case .yhSongs, .tySongs:
                 return self.makeSongListSection(sectionIndex: sectionIndex, environment: environment)
                 
             case .lofiAlbums, .happyPopAlbums:

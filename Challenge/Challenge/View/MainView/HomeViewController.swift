@@ -136,26 +136,32 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         switch section.type {
         case .featuredAlbum:
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: AlbumCardCell.identifier,
                 for: indexPath
-            ) as! AlbumCardCell
+            ) as? AlbumCardCell else {
+                return UICollectionViewCell()
+            }
             cell.configure(with: item)
             return cell
             
-        case .YHSongs, .TYSongs:
-            let cell = collectionView.dequeueReusableCell(
+        case .yhSongs, .tySongs:
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: SongListCell.identifier,
                 for: indexPath
-            ) as! SongListCell
+            ) as? SongListCell else {
+                return UICollectionViewCell()
+            }
             cell.configure(with: item)
             return cell
             
         case .lofiAlbums, .happyPopAlbums:
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: AlbumCoverCell.identifier,
                 for: indexPath
-            ) as! AlbumCoverCell
+            ) as? AlbumCoverCell else {
+                return UICollectionViewCell()
+            }
             cell.configure(with: item)
             return cell
         }
@@ -164,11 +170,13 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         if kind == UICollectionView.elementKindSectionHeader {
-            let header = collectionView.dequeueReusableSupplementaryView(
+            guard let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: HomeSectionHeaderView.identifier,
                 for: indexPath
-            ) as! HomeSectionHeaderView
+            ) as? HomeSectionHeaderView else {
+                return UICollectionReusableView()
+            }
             
             if let section = HomeSection(rawValue: indexPath.section) {
                 header.titleLabel.text = section.title
@@ -178,11 +186,13 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
         
         if kind == PageControlView.kind {
-            let footer = collectionView.dequeueReusableSupplementaryView(
+            guard let footer = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: PageControlView.identifier,
                 for: indexPath
-            ) as! PageControlView
+            ) as? PageControlView else {
+                return UICollectionReusableView()
+            }
             
             footer.pageControl.numberOfPages = 3
             footer.pageControl.currentPage = 0

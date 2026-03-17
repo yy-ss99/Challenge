@@ -19,6 +19,11 @@ struct HomeSectionModel {
 
 final class HomeViewModel {
     private let disposeBag = DisposeBag()
+    private let networkService: NetworkService
+
+    init(networkService: NetworkService = NetworkManager()) {
+        self.networkService = networkService
+    }
     
     // 받아올 정보: viewDidLoad 됐는가
     struct Input {
@@ -59,7 +64,8 @@ final class HomeViewModel {
                     })
                     .catch { error in // 오류 잡기
                         loadingRelay.accept(false)
-                        errorRelay.accept("데이터 전송오류")
+                        let message = self.makeErrorMessage(from: error)
+                        errorRelay.accept(message)
                         return .just([])
                     }
             }
@@ -76,39 +82,25 @@ final class HomeViewModel {
     
     // fetch해줌 다 같이 뜨는게 자연스럽기 때문에 zip 사용해서 HomeSectionModel에 넣어서 넘김
     func fetchHomeSectionsData() -> Single<[HomeSectionModel]> {
-        let featuredAlbum = NetworkManager.shared
-            .fetch(endpoint: .kpopAlbums) as Single<ITunesResponse<MusicItem>>
+        let featuredAlbum: Single<ITunesResponse<MusicItem>> = networkService.fetch(endpoint: .kpopAlbums)
+        let yhSongs: Single<ITunesResponse<MusicItem>> = networkService.fetch(endpoint: .yhSongs)
+        let tySongs: Single<ITunesResponse<MusicItem>> = networkService.fetch(endpoint: .tySongs)
+        let lofiAlbums: Single<ITunesResponse<MusicItem>> = networkService.fetch(endpoint: .lofiChillAlbums)
+        let happyPopAlbums: Single<ITunesResponse<MusicItem>> = networkService.fetch(endpoint: .happyPopAlbums)
         
-        let yhSongs = NetworkManager.shared
-            .fetch(endpoint: .yhSongs) as Single<ITunesResponse<MusicItem>>
-        
-        let tySongs = NetworkManager.shared
-            .fetch(endpoint: .tySongs) as Single<ITunesResponse<MusicItem>>
-        
-        let lofiAlbums = NetworkManager.shared
-            .fetch(endpoint: .lofiChillAlbums) as Single<ITunesResponse<MusicItem>>
-        
-        let happyPopAlbums = NetworkManager.shared
-            .fetch(endpoint: .happyPopAlbums) as Single<ITunesResponse<MusicItem>>
-        
-        return Single.zip(
-            featuredAlbum,
-            yhSongs,
-            tySongs,
-            lofiAlbums,
-            happyPopAlbums
-        ) { featured, yhSongs, tySongs, lofi, happy in
+        return Single.zip(featuredAlbum, yhSongs, tySongs, lofiAlbums, happyPopAlbums){ featured, yhSongs, tySongs, lofi, happy in
+            
             return [
                 HomeSectionModel(
                     type: .featuredAlbum,
                     items: featured.results
                 ),
                 HomeSectionModel(
-                    type: .YHSongs,
+                    type: .yhSongs,
                     items: yhSongs.results
                 ),
                 HomeSectionModel(
-                    type: .TYSongs,
+                    type: .tySongs,
                     items: tySongs.results
                 ),
                 HomeSectionModel(
@@ -120,6 +112,15 @@ final class HomeViewModel {
                     items: happy.results
                 )
             ]
+        }
+    }
+    
+    // 오류메세지를 넘김
+    private func makeErrorMessage(from error: Error) -> String {
+        if let networkError = error as? NetworkError {
+            return networkError.localizedDescription
+        } else {
+            return error.localizedDescription
         }
     }
 }
