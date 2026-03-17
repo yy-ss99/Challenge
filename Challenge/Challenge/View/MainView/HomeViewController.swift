@@ -81,7 +81,7 @@ final class HomeViewController: UIViewController {
     func configure() {
         view.addSubview(homeView)
         view.addSubview(searchBar)
-        searchBar.placeholder = "영화,팟캐스트 검색"
+        searchBar.placeholder = "음악,팟캐스트 검색"
         searchBar.searchBarStyle = .minimal
         
         searchBar.snp.makeConstraints {
