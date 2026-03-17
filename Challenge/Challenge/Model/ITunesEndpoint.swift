@@ -76,7 +76,7 @@ enum ITunesEndpoint {
     }
     
     var url: URL? {
-        var components = URLComponents(string: baseURL)
+        var components = URLComponents(string: ITunesEndpoint.baseURL)
         components?.queryItems = queryItems
         return components?.url
     }

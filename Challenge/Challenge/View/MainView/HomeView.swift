@@ -10,6 +10,7 @@ import RxSwift
 import SnapKit
 
 final class HomeView: UIView {
+    // 페이지 컨트롤을 위한 클로저
     var changeToCurrentPage: ((Int, Int) -> Void)?
     
     lazy var collectionView = UICollectionView(
