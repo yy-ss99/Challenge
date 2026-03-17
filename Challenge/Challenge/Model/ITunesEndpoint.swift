@@ -14,9 +14,7 @@ enum ITunesEndpoint {
     case lofiChillAlbums
     case happyPopAlbums
     
-    var baseURL: String {
-        return "https://itunes.apple.com/search"
-    }
+    static let baseURL = "https://itunes.apple.com/search"
     
     var queryItems: [URLQueryItem] {
         switch self {
