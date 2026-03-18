@@ -32,7 +32,7 @@ final class HomeViewController: UIViewController {
         homeView.collectionView.dataSource = self
         searchBar.delegate = self
         
-        configure()
+        configureUI()
         bindViewModel()
         sendCurrentPageForPageControl()
     }
@@ -78,7 +78,7 @@ final class HomeViewController: UIViewController {
             }.disposed(by: disposeBag)
     }
     
-    func configure() {
+    func configureUI() {
         view.addSubview(homeView)
         view.addSubview(searchBar)
         searchBar.placeholder = "음악,팟캐스트 검색"
@@ -114,8 +114,9 @@ final class HomeViewController: UIViewController {
 
 extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        
-        // 다음 화면 push 해주기
+        // SearchVC 생성
+        let searchVC = SearchViewController()
+        navigationController?.pushViewController(searchVC, animated: true)
     }
 }
 
@@ -136,7 +137,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         switch section.type {
         case .featuredAlbum:
-            let cell: AlbumCardCell = collectionView.dequeueReusableCell(for: indexPath)
+            let cell: AlbumBigCardCell = collectionView.dequeueReusableCell(for: indexPath)
             cell.configure(with: item)
             return cell
             

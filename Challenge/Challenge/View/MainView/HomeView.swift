@@ -70,8 +70,8 @@ final class HomeView: UIView {
     
     private func registerCells() {
         collectionView.register(
-            AlbumCardCell.self,
-            forCellWithReuseIdentifier: AlbumCardCell.identifier
+            AlbumBigCardCell.self,
+            forCellWithReuseIdentifier: AlbumBigCardCell.identifier
         )
         
         collectionView.register(
