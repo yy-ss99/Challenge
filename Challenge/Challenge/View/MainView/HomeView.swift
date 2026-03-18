@@ -225,7 +225,7 @@ extension HomeView {
         return section
     }
     
-    private func makeHeaderItem(height: CGFloat = 36) -> NSCollectionLayoutBoundarySupplementaryItem {
+    private func makeHeaderItem(height: CGFloat = 50) -> NSCollectionLayoutBoundarySupplementaryItem {
         let size = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .absolute(height)
@@ -238,7 +238,7 @@ extension HomeView {
         )
     }
     
-    private func makePageControlItem(height: CGFloat = 20) -> NSCollectionLayoutBoundarySupplementaryItem {
+    private func makePageControlItem(height: CGFloat = 25) -> NSCollectionLayoutBoundarySupplementaryItem {
         let size = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .absolute(height)
