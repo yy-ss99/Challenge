@@ -10,10 +10,6 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-//UISearchBar 추가
-//검색 시작 시 SearchResultViewController를 push 한다
-//나중에 RxSwift로 검색어를 VM에 넘긴다
-
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
     private let disposeBag = DisposeBag()

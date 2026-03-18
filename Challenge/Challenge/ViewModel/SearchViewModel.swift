@@ -8,11 +8,13 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+// 섹션에 넘기기 위한 타입
 struct SearchSectionModel {
     let section: SearchSection
     let items: [SearchItem]
 }
 
+// 데이터 소스 구성을 위한 타입
 nonisolated
 enum SearchItem: Hashable, Sendable {
     case song(MusicItem)
@@ -52,7 +54,6 @@ final class SearchViewModel {
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
         // 직전 값이랑 같으면 무시해라
             .distinctUntilChanged()
-            .debug()
         // query 받은거 중에 가장 최신것만 유효하게 유지하도록 설정한건데 어떻게 하냐면
             .flatMapLatest { [weak self] query -> Observable<[SearchSectionModel]> in
                 guard let self else { return .just([]) }
