@@ -8,9 +8,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-// 홈에 필요한 내용만 보낼 수 있도록
-// 접근제한자 적절히 쓰기
-
 // 한번에 가져와서 섹션별로 넣어주기 위해서 한번 담아줌
 struct HomeSectionModel {
     let type: HomeSection
@@ -18,7 +15,6 @@ struct HomeSectionModel {
 }
 
 final class HomeViewModel {
-    private let disposeBag = DisposeBag()
     private let networkService: NetworkService
 
     init(networkService: NetworkService = NetworkManager()) {
