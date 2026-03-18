@@ -10,7 +10,7 @@ import Then
 
 final class HomeSectionHeaderView: UICollectionReusableView {
     let titleLabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 22, weight: .bold)
+        $0.font = .systemFont(ofSize: 24, weight: .bold)
         $0.textColor = .label
     }
     
