@@ -37,6 +37,12 @@ final class HomeViewController: UIViewController {
         sendCurrentPageForPageControl()
     }
     
+    // 뷰가 나타날때 검색창에 전에 검색했던 내용을 없애줌
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        searchBar.text = ""
+    }
+    
     func bindViewModel() {
         // just로 Void를 한번만 방출해서 뷰가 로드됨을 알림
         let input = HomeViewModel.Input(
@@ -114,8 +120,12 @@ final class HomeViewController: UIViewController {
 
 extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        // SearchVC 생성
-        let searchVC = SearchViewController()
+        // 옵셔널 언래핑, 앞뒤공백 줄바꿈 제거
+        let query = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        
+        guard !query.isEmpty else { return }
+        
+        let searchVC = SearchViewController(initialQuery: query)
         navigationController?.pushViewController(searchVC, animated: true)
     }
 }
