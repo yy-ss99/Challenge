@@ -10,6 +10,7 @@ import RxSwift
 import SnapKit
 
 final class SearchView: UIView {
+    private let emptyLabel = UILabel()
     private let loadingView = LoadingView()
     lazy var collectionView = UICollectionView(
         frame: .zero,
@@ -33,6 +34,7 @@ final class SearchView: UIView {
         registerCells()
         registerSupplementaryViews()
         configureLoadingView()
+        configureBackground()
     }
     
     private func configureLoadingView() {
@@ -51,6 +53,15 @@ final class SearchView: UIView {
     
     func hideLoading() {
         loadingView.stopLoading()
+    }
+    
+    func configureBackground() {
+        emptyLabel.text = "검색 결과가 없습니다"
+        emptyLabel.textAlignment = .center
+        emptyLabel.textColor = .secondaryLabel
+
+        collectionView.backgroundView = emptyLabel
+        collectionView.backgroundView?.isHidden = true
     }
     
     private func registerCells() {
