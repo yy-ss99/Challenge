@@ -10,15 +10,14 @@ import RxSwift
 import SnapKit
 
 final class HomeView: UIView {
+    // 페이지 컨트롤을 위한 클로저
     var changeToCurrentPage: ((Int, Int) -> Void)?
     
+    private let loadingView = LoadingView()
     lazy var collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: makeLayout()
         )
-    
-    private let loadingBackgroundView = UIView()
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -40,37 +39,27 @@ final class HomeView: UIView {
     }
     
     func configureLoadingView() {
-        addSubview(loadingBackgroundView)
+        addSubview(loadingView)
         
-        loadingBackgroundView.snp.makeConstraints {
+        loadingView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
         
-        loadingBackgroundView.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.8)
-        loadingBackgroundView.isHidden = true
-        
-        loadingBackgroundView.addSubview(activityIndicator)
-        activityIndicator.snp.makeConstraints {
-            $0.center.equalToSuperview()
-        }
-        
-        activityIndicator.hidesWhenStopped = true
+        loadingView.isHidden = true
     }
     
     func showLoading() {
-        loadingBackgroundView.isHidden = false
-        activityIndicator.startAnimating()
+        loadingView.startLoading()
     }
     
     func hideLoading() {
-        loadingBackgroundView.isHidden = true
-        activityIndicator.stopAnimating()
+        loadingView.stopLoading()
     }
     
     private func registerCells() {
         collectionView.register(
-            AlbumCardCell.self,
-            forCellWithReuseIdentifier: AlbumCardCell.identifier
+            AlbumBigCardCell.self,
+            forCellWithReuseIdentifier: AlbumBigCardCell.identifier
         )
         
         collectionView.register(
@@ -119,21 +108,23 @@ final class HomeView: UIView {
 extension HomeView {
     private func makeFeaturedAlbumSection(environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         let spacing: CGFloat = 10
+        let cardWidthRatio: CGFloat = 0.82
         
-        let containerSize = environment.container.effectiveContentSize
-        let itemWidthSize = (containerSize.width - spacing * 2)
+        let containerWidth = environment.container.effectiveContentSize.width
+        let itemWidth = containerWidth * cardWidthRatio
+        let itemHeight = itemWidth
         
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(itemWidthSize),
-            heightDimension: .absolute(itemWidthSize)
+            widthDimension: .absolute(itemWidth),
+            heightDimension: .absolute(itemHeight)
         )
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: .init(
-                widthDimension: .absolute(itemWidthSize),
-                heightDimension: .absolute(itemWidthSize)
+                widthDimension: .absolute(itemWidth),
+                heightDimension: .absolute(itemHeight)
             ),
             subitems: [item]
         )
@@ -224,7 +215,7 @@ extension HomeView {
         return section
     }
     
-    private func makeHeaderItem(height: CGFloat = 36) -> NSCollectionLayoutBoundarySupplementaryItem {
+    private func makeHeaderItem(height: CGFloat = 50) -> NSCollectionLayoutBoundarySupplementaryItem {
         let size = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .absolute(height)
@@ -237,7 +228,7 @@ extension HomeView {
         )
     }
     
-    private func makePageControlItem(height: CGFloat = 20) -> NSCollectionLayoutBoundarySupplementaryItem {
+    private func makePageControlItem(height: CGFloat = 25) -> NSCollectionLayoutBoundarySupplementaryItem {
         let size = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .absolute(height)

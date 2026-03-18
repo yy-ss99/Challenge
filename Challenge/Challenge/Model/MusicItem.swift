@@ -6,7 +6,8 @@
 //
 import Foundation
 
-struct MusicItem: Decodable {
+nonisolated
+struct MusicItem: Decodable, Hashable, Sendable {
     let collectionId: Int?
     let trackId: Int?
     

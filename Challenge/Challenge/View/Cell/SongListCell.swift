@@ -82,7 +82,11 @@ final class SongListCell: UICollectionViewCell {
     
     func configure(with item: MusicItem) {
         trackNameLabel.text = item.trackName ?? "노래 제목 없음"
-        artistLabel.text = item.artistName ?? "아티스트"
+        if let artistName = item.artistName,
+           let collectionName = item.collectionName {
+            artistLabel.text = "\(artistName) • \(collectionName)"
+        }
+        //artistLabel.text = item.artistName ?? "아티스트"
         
         // kf가 nil처리를 해주기 떄문에 (kf.setImage(with: nil)가능)
         // String이 있으면 URL로 -> 없거나 실패하면 nil

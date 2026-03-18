@@ -13,6 +13,10 @@ enum ITunesEndpoint {
     case tySongs
     case lofiChillAlbums
     case happyPopAlbums
+    // 검색용
+    case searchSongs(term: String)
+    case searchAlbums(term: String)
+    case searchPodcasts(term: String)
     
     static let baseURL = "https://itunes.apple.com/search"
     
@@ -72,11 +76,38 @@ enum ITunesEndpoint {
                 URLQueryItem(name: "limit", value: "10"),
                 URLQueryItem(name: "country", value: "KR")
             ]
+            
+        case .searchSongs(let term):
+            return [
+                URLQueryItem(name: "term", value: term),
+                URLQueryItem(name: "media", value: "music"),
+                URLQueryItem(name: "entity", value: "song"),
+                URLQueryItem(name: "limit", value: "20"),
+                URLQueryItem(name: "country", value: "KR")
+            ]
+            
+        case .searchAlbums(let term):
+            return [
+                URLQueryItem(name: "term", value: term),
+                URLQueryItem(name: "media", value: "music"),
+                URLQueryItem(name: "entity", value: "album"),
+                URLQueryItem(name: "limit", value: "10"),
+                URLQueryItem(name: "country", value: "KR")
+            ]
+            
+        case .searchPodcasts(let term):
+            return [
+                URLQueryItem(name: "term", value: term),
+                URLQueryItem(name: "media", value: "podcast"),
+                URLQueryItem(name: "entity", value: "podcast"),
+                URLQueryItem(name: "limit", value: "20"),
+                URLQueryItem(name: "country", value: "KR")
+            ]
         }
     }
     
     var url: URL? {
-        var components = URLComponents(string: baseURL)
+        var components = URLComponents(string: ITunesEndpoint.baseURL)
         components?.queryItems = queryItems
         return components?.url
     }

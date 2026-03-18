@@ -1,15 +1,15 @@
 //
-//  AlbumCardCell.swift
+//  AlbumBigCardCell.swift
 //  Challenge
 //
-//  Created by Yeseul Jang on 3/11/26.
+//  Created by Yeseul Jang on 3/17/26.
 //
 import UIKit
 import SnapKit
 import Then
 import Kingfisher
 
-final class AlbumCardCell: UICollectionViewCell {
+final class AlbumBigCardCell: UICollectionViewCell {
     private let cardView = UIView()
     private let albumImageView = UIImageView()
     private let dimView = UIView()
@@ -98,4 +98,3 @@ final class AlbumCardCell: UICollectionViewCell {
         artistLabel.numberOfLines = 1
     }
 }
-

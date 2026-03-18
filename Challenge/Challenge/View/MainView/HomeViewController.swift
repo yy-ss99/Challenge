@@ -10,10 +10,6 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-//UISearchBar 추가
-//검색 시작 시 SearchResultViewController를 push 한다
-//나중에 RxSwift로 검색어를 VM에 넘긴다
-
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
     private let disposeBag = DisposeBag()
@@ -32,9 +28,15 @@ final class HomeViewController: UIViewController {
         homeView.collectionView.dataSource = self
         searchBar.delegate = self
         
-        configure()
+        configureUI()
         bindViewModel()
         sendCurrentPageForPageControl()
+    }
+    
+    // 뷰가 나타날때 검색창에 전에 검색했던 내용을 없애줌
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        searchBar.text = ""
     }
     
     func bindViewModel() {
@@ -78,10 +80,10 @@ final class HomeViewController: UIViewController {
             }.disposed(by: disposeBag)
     }
     
-    func configure() {
+    func configureUI() {
         view.addSubview(homeView)
         view.addSubview(searchBar)
-        searchBar.placeholder = "영화,팟캐스트 검색"
+        searchBar.placeholder = "음악,팟캐스트 검색"
         searchBar.searchBarStyle = .minimal
         
         searchBar.snp.makeConstraints {
@@ -114,8 +116,13 @@ final class HomeViewController: UIViewController {
 
 extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        // 옵셔널 언래핑, 앞뒤공백 줄바꿈 제거
+        let query = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
-        // 다음 화면 push 해주기
+        guard !query.isEmpty else { return }
+        
+        let searchVC = SearchViewController(initialQuery: query)
+        navigationController?.pushViewController(searchVC, animated: true)
     }
 }
 
@@ -136,7 +143,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         switch section.type {
         case .featuredAlbum:
-            let cell: AlbumCardCell = collectionView.dequeueReusableCell(for: indexPath)
+            let cell: AlbumBigCardCell = collectionView.dequeueReusableCell(for: indexPath)
             cell.configure(with: item)
             return cell
             
