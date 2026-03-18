@@ -14,11 +14,11 @@ enum SearchSection: Int, CaseIterable {
     var title: String {
         switch self {
         case .songs:
-            return "곡 검색결과"
+            return "🔎 곡 검색결과"
         case .albums:
-            return "앨범 검색결과"
+            return "🔎 앨범 검색결과"
         case .podcasts:
-            return "팟캐스트 검색결과"
+            return "🔎 팟캐스트 검색결과"
         }
     }
 }
