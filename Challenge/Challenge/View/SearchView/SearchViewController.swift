@@ -58,23 +58,33 @@ final class SearchViewController: UIViewController {
         
         // 성공 - 섹션이면 스냅샷에 흘려 넣어서 콜렉션뷰 그리기
         output.sections
-            .drive(onNext: { [weak self] sections in
-                self?.applySnapshot(with: sections) // 콜렉션 업데이트
-            })
+            .drive(with: self) { SearchVC, sections in
+                SearchVC.applySnapshot(with: sections) // 콜렉션 업데이트
+            }
             .disposed(by: disposeBag)
         
         // 로딩 받으면 로딩시 하는 동작들
         output.isLoading
-            .drive(onNext: { isLoading in
-                print("로딩중")
-            })
+            .drive(with: self) { SearchVC, isLoading in
+                if isLoading {
+                    SearchVC.searchView.showLoading()
+                } else {
+                    SearchVC.searchView.hideLoading()
+                }
+            }
             .disposed(by: disposeBag)
         
         // 오류 받으면 오류 띄우기
         output.errorMessage
-            .emit(onNext: { message in
-                print("error 띄우기")
-            })
+            .emit(with: self) { owner, message in
+                let alert = UIAlertController(
+                    title: "에러",
+                    message: message,
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "확인", style: .default))
+                owner.present(alert, animated: true)
+            }
             .disposed(by: disposeBag)
     }
     

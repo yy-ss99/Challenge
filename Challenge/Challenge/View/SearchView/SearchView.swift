@@ -12,6 +12,7 @@ import RxSwift
 import SnapKit
 
 final class SearchView: UIView {
+    private let loadingView = LoadingView()
     lazy var collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: makeLayout()
@@ -29,10 +30,29 @@ final class SearchView: UIView {
         collectionView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
-        collectionView.backgroundColor = .systemBackground
         
+        collectionView.backgroundColor = .systemBackground
         registerCells()
         registerSupplementaryViews()
+        configureLoadingView()
+    }
+    
+    private func configureLoadingView() {
+        addSubview(loadingView)
+        
+        loadingView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        loadingView.isHidden = true
+    }
+    
+    func showLoading() {
+        loadingView.startLoading()
+    }
+    
+    func hideLoading() {
+        loadingView.stopLoading()
     }
     
     private func registerCells() {
