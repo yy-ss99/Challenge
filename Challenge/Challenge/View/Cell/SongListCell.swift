@@ -84,7 +84,7 @@ final class SongListCell: UICollectionViewCell {
         trackNameLabel.text = item.trackName ?? "노래 제목 없음"
         if let artistName = item.artistName,
            let collectionName = item.collectionName {
-            artistLabel.text = "\(artistName)•\(collectionName)"
+            artistLabel.text = "\(artistName) • \(collectionName)"
         }
         //artistLabel.text = item.artistName ?? "아티스트"
         
