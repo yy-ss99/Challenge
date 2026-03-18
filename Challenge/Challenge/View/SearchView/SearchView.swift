@@ -4,6 +4,9 @@
 //
 //  Created by Yeseul Jang on 3/17/26.
 //
+
+// TODO: 로딩 화면 만들기, 오류메세지 알럿 만들기, 작은 커버셀에 제목 보이게하기
+
 import UIKit
 import RxSwift
 import SnapKit
@@ -164,7 +167,7 @@ extension SearchView {
         return section
     }
     
-    private func makeHeaderItem(height: CGFloat = 36) -> NSCollectionLayoutBoundarySupplementaryItem {
+    private func makeHeaderItem(height: CGFloat = 60) -> NSCollectionLayoutBoundarySupplementaryItem {
         let size = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .absolute(height)
