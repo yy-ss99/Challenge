@@ -77,14 +77,20 @@ final class SearchViewController: UIViewController {
         
         // 오류 받으면 오류 띄우기
         output.errorMessage
-            .emit(with: self) { owner, message in
+            .emit(with: self) { SearchVC, message in
                 let alert = UIAlertController(
                     title: "에러",
                     message: message,
                     preferredStyle: .alert
                 )
                 alert.addAction(UIAlertAction(title: "확인", style: .default))
-                owner.present(alert, animated: true)
+                SearchVC.present(alert, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        output.isEmpty
+            .drive(with: self) { SearchVC, isEmpty in
+                SearchVC.searchView.collectionView.backgroundView?.isHidden = !isEmpty
             }
             .disposed(by: disposeBag)
     }

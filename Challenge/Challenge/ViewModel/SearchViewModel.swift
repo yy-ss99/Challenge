@@ -39,6 +39,7 @@ final class SearchViewModel: ViewModelType {
         let sections: Driver<[SearchSectionModel]>
         let isLoading: Driver<Bool>
         let errorMessage: Signal<String>
+        let isEmpty: Driver<Bool>
     }
     
     func transform(input: Input) -> Output {
@@ -56,7 +57,7 @@ final class SearchViewModel: ViewModelType {
             .distinctUntilChanged()
         // query 받은거 중에 가장 최신것만 유효하게 유지하도록 설정한건데 어떻게 하냐면
             .flatMapLatest { [weak self] query -> Observable<[SearchSectionModel]> in
-                guard let self else { return .just([]) }
+                guard let self else { return .empty() }
                 
                 // 아무것도 안들어왔으면 그냥 빈값 뱉음
                 if query.isEmpty {
@@ -74,20 +75,22 @@ final class SearchViewModel: ViewModelType {
                     .do(onNext: { _ in
                         loadingRelay.accept(false)
                     })
-                // 오류 잡기
-                    .catch { error in
-                        loadingRelay.accept(false)
-                        let message = self.makeErrorMessage(from: error)
-                        errorRelay.accept(message)
-                        return .just([])
-                    }
             }
-            .asDriver(onErrorJustReturn: []) // 드라이브는 UI 전용이라 오류 배출 안돼서 넣어줌
+            .asDriver(onErrorRecover: { error in
+                loadingRelay.accept(false)
+                let message = self.makeErrorMessage(from: error)
+                errorRelay.accept(message)
+                return .empty()
+            })
+        let isEmpty = sections
+            .map { $0.isEmpty }
+            .distinctUntilChanged()
         
         return Output(
             sections: sections,
             isLoading: loadingRelay.asDriver(),
-            errorMessage: errorRelay.asSignal()
+            errorMessage: errorRelay.asSignal(),
+            isEmpty: isEmpty.asDriver()
         )
     }
     
