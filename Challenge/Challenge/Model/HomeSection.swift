@@ -18,13 +18,13 @@ enum HomeSection: Int, CaseIterable {
         case .featuredAlbum:
             return "#Kpop"
         case .yhSongs:
-            return "인기 급상승 가수"
+            return "인기 급상승 가수 🔥"
         case .tySongs:
-            return "이 노래 어떠세요?"
+            return "🌼 오늘 이 노래 어떠세요?"
         case .lofiAlbums:
-            return "lofi Music"
+            return "🪐 lofi Music"
         case .happyPopAlbums:
-            return "Happy Pop"
+            return "🌈 Happy Pop"
         }
     }
 }
