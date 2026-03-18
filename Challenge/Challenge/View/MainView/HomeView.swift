@@ -108,21 +108,23 @@ final class HomeView: UIView {
 extension HomeView {
     private func makeFeaturedAlbumSection(environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         let spacing: CGFloat = 10
+        let cardWidthRatio: CGFloat = 0.82
         
-        let containerSize = environment.container.effectiveContentSize
-        let itemWidthSize = (containerSize.width - spacing * 2)
+        let containerWidth = environment.container.effectiveContentSize.width
+        let itemWidth = containerWidth * cardWidthRatio
+        let itemHeight = itemWidth
         
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(itemWidthSize),
-            heightDimension: .absolute(itemWidthSize)
+            widthDimension: .absolute(itemWidth),
+            heightDimension: .absolute(itemHeight)
         )
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: .init(
-                widthDimension: .absolute(itemWidthSize),
-                heightDimension: .absolute(itemWidthSize)
+                widthDimension: .absolute(itemWidth),
+                heightDimension: .absolute(itemHeight)
             ),
             subitems: [item]
         )
