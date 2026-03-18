@@ -12,7 +12,7 @@ import SnapKit
 final class SearchViewController: UIViewController {
     private let searchView = SearchView()
     private let disposeBag = DisposeBag()
-    private let viewModel = SearchViewModel()
+    private let viewModel: SearchViewModel
     private let searchBar = UISearchBar()
     
     private let initialQuery: String
@@ -20,8 +20,9 @@ final class SearchViewController: UIViewController {
     
     private var dataSource: UICollectionViewDiffableDataSource<SearchSection, SearchItem>!
     
-    init(initialQuery: String) {
+    init(initialQuery: String, viewModel: SearchViewModel = SearchViewModel()) {
         self.initialQuery = initialQuery
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
