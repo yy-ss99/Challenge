@@ -22,7 +22,7 @@ enum SearchItem: Hashable, Sendable {
     case podcast(MusicItem)
 }
 
-final class SearchViewModel {
+final class SearchViewModel: ViewModelType {
     private let networkService: NetworkService
     
     init(networkService: NetworkService = NetworkManager()) {

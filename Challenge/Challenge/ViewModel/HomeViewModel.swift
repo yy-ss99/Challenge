@@ -14,7 +14,7 @@ struct HomeSectionModel {
     let items: [MusicItem]
 }
 
-final class HomeViewModel {
+final class HomeViewModel: ViewModelType {
     private let networkService: NetworkService
 
     init(networkService: NetworkService = NetworkManager()) {

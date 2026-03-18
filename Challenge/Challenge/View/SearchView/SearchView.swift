@@ -5,8 +5,6 @@
 //  Created by Yeseul Jang on 3/17/26.
 //
 
-// TODO: 로딩 화면 만들기, 오류메세지 알럿 만들기, 작은 커버셀에 제목 보이게하기
-
 import UIKit
 import RxSwift
 import SnapKit
