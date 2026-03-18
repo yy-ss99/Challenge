@@ -90,7 +90,7 @@ final class SearchViewModel: ViewModelType {
             sections: sections,
             isLoading: loadingRelay.asDriver(),
             errorMessage: errorRelay.asSignal(),
-            isEmpty: isEmpty
+            isEmpty: isEmpty.asDriver()
         )
     }
     
