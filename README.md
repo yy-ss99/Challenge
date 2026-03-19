@@ -257,7 +257,7 @@ Observable.just(item)
 ### 1-1. 해결방안 
 ```swift
 input.viewDidLoad
-    .map { [item] in item }
+    .map { _ in self.item }
 ```
 - `viewDidLoad` 이벤트가 발생했을 때를 기준으로 `item`을 방출하도록 변경함
 - 원래 의도대로 화면이 준비된 시점에 맞춰 데이터를 전달한다는 흐름을 명확하게 표현할 수 있음
