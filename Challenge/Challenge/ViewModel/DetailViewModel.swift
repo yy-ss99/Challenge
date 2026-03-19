@@ -23,18 +23,25 @@ struct DetailMedia {
     let statusText: String
 }
 
+struct MatchedMusicVideo {
+    let title: String?
+    let previewURL: URL?
+}
+
 final class DetailViewModel: ViewModelType {
     private let item: MusicItem
     private let contentType: DetailContentType
-    private let mockMusicVideoURL = URL(string: "https://video-ssl.itunes.apple.com/itunes-assets/Video221/v4/93/a4/a8/93a4a88a-980b-1267-211a-0664c0eeb72a/mzvf_14330022327392325610.1920w.h264lc.U.p.m4v")
+    private let networkService: NetworkService
     
     // 디테일뷰에 필요한거 가져옴
     init(
         item: MusicItem,
-        contentType: DetailContentType
+        contentType: DetailContentType,
+        networkService: NetworkService = NetworkManager()
     ) {
         self.item = item
         self.contentType = contentType
+        self.networkService = networkService
     }
     
     struct Input {
@@ -112,17 +119,26 @@ final class DetailViewModel: ViewModelType {
     
     private func makeMedia() -> Single<DetailMedia> {
         switch contentType {
-            // 앨범주소 넣어주고 값 넣어줌
         case .album:
-            return .just(
-                DetailMedia(
-                    mediaURL: mockMusicVideoURL,
-                    showsVideo: true,
-                    showsGuideText: true,
-                    statusText: "\(item.collectionName ?? "앨범") 자동 재생 중"
-                )
-            )
-            // 앨범은 제외하고는 프리뷰 URL 있을경우
+            return fetchRelatedMusicVideo()
+                .map { matchedVideo in
+                    if let previewURL = matchedVideo.previewURL {
+                        return DetailMedia(
+                            mediaURL: previewURL,
+                            showsVideo: true,
+                            showsGuideText: true,
+                            statusText: "\(matchedVideo.title ?? "관련 뮤직비디오") 자동 재생 중"
+                        )
+                    } else {
+                        return DetailMedia(
+                            mediaURL: nil,
+                            showsVideo: false,
+                            showsGuideText: false,
+                            statusText: "관련 뮤직비디오가 없어서 썸네일 이미지를 보여줍니다."
+                        )
+                    }
+                }
+            
         case .song, .podcast:
             let previewURL = item.previewUrl.flatMap(URL.init(string:))
             if previewURL != nil {
@@ -144,6 +160,48 @@ final class DetailViewModel: ViewModelType {
                     )
                 )
             }
+        }
+    }
+    
+    private func fetchRelatedMusicVideo() -> Single<MatchedMusicVideo> {
+        let searchTerm = [item.artistName, item.collectionName]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+        
+        guard !searchTerm.isEmpty else {
+            return .just(MatchedMusicVideo(title: nil, previewURL: nil))
+        }
+        
+        return searchMusicVideo(term: searchTerm)
+            .catchAndReturn(MatchedMusicVideo(title: nil, previewURL: nil))
+    }
+    
+    private func searchMusicVideo(term: String) -> Single<MatchedMusicVideo> {
+        let response: Single<ITunesResponse<MusicItem>> = networkService.fetch(
+            endpoint: .searchMusicVideos(term: term)
+        )
+        
+        return response.map { [item] response in
+            let artistName = item.artistName?.lowercased()
+            
+            let exactArtistMatch = response.results.first { musicVideo in
+                guard let previewURL = musicVideo.previewUrl, !previewURL.isEmpty else {
+                    return false
+                }
+                
+                guard let artistName else { return true }
+                return musicVideo.artistName?.lowercased() == artistName
+            }
+            
+            if let exactArtistMatch {
+                return MatchedMusicVideo(
+                    title: exactArtistMatch.trackName ?? exactArtistMatch.collectionName,
+                    previewURL: exactArtistMatch.previewUrl.flatMap(URL.init(string:))
+                )
+            }
+            
+            return MatchedMusicVideo(title: nil, previewURL: nil)
         }
     }
     
