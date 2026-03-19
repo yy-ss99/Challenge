@@ -13,7 +13,7 @@ final class SearchViewController: UIViewController {
     private let searchView = SearchView()
     private let disposeBag = DisposeBag()
     private let viewModel: SearchViewModel
-    private let searchBar = UISearchBar()
+    private let searchController = UISearchController(searchResultsController: nil)
     
     private let initialQuery: String
     private let initialQueryRelay = PublishRelay<String>()
@@ -33,13 +33,15 @@ final class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        navigationItem.title = "Search"
+        navigationItem.largeTitleDisplayMode = .always
         searchView.collectionView.delegate = self
         configureUI()
         configureDataSource()
         bindViewModel()
         
         // 입력된거 보여줌
-        searchBar.text = initialQuery
+        searchController.searchBar.text = initialQuery
         // 서치뷰 띄우면서 넘겨받은 첫 검색어를 검색 이벤트로 만들기
         initialQueryRelay.accept(initialQuery)
     }
@@ -50,7 +52,7 @@ final class SearchViewController: UIViewController {
         let queryText = Observable.merge(
             // 홈뷰에서 받아온거랑 서치뷰에서 입력된거 받아서 묶음
             initialQueryRelay.asObservable(),
-            searchBar.rx.text.orEmpty.asObservable()
+            searchController.searchBar.rx.text.orEmpty.asObservable()
         )
         // 인풋 넣기
         let input = SearchViewModel.Input(queryText: queryText)
@@ -98,16 +100,18 @@ final class SearchViewController: UIViewController {
     
     func configureUI() {
         view.addSubview(searchView)
-        view.addSubview(searchBar)
-        searchBar.searchBarStyle = .minimal
         
-        searchBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
-        }
+        searchController.searchBar.searchBarStyle = .default
+        searchController.searchBar.placeholder = "음악,팟캐스트 검색"
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
         
         searchView.snp.makeConstraints {
-            $0.top.equalTo(searchBar.snp.bottom)
+            $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }

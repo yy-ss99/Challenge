@@ -13,7 +13,7 @@ import SnapKit
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
     private let disposeBag = DisposeBag()
-    private let searchBar = UISearchBar()
+    private let searchController = UISearchController(searchResultsController: nil)
     
     private let viewModel = HomeViewModel()
     
@@ -23,10 +23,10 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         navigationItem.title = "Music"
+        navigationItem.largeTitleDisplayMode = .always
         
         homeView.collectionView.delegate = self
         homeView.collectionView.dataSource = self
-        searchBar.delegate = self
         
         configureUI()
         bindViewModel()
@@ -36,7 +36,7 @@ final class HomeViewController: UIViewController {
     // 뷰가 나타날때 검색창에 전에 검색했던 내용을 없애줌
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        searchBar.text = ""
+        searchController.searchBar.text = ""
     }
     
     func bindViewModel() {
@@ -82,17 +82,19 @@ final class HomeViewController: UIViewController {
     
     func configureUI() {
         view.addSubview(homeView)
-        view.addSubview(searchBar)
-        searchBar.placeholder = "음악,팟캐스트 검색"
-        searchBar.searchBarStyle = .minimal
         
-        searchBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
-        }
+        searchController.searchBar.placeholder = "음악,팟캐스트 검색"
+        searchController.searchBar.searchBarStyle = .default
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchBar.delegate = self
+        
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
         
         homeView.snp.makeConstraints {
-            $0.top.equalTo(searchBar.snp.bottom)
+            $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
