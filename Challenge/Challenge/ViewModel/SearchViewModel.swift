@@ -9,7 +9,7 @@ import RxSwift
 import RxCocoa
 
 // 섹션에 넘기기 위한 타입
-struct SearchSectionModel {
+struct SearchSectionModel: Sendable {
     let section: SearchSection
     let items: [SearchItem]
 }
