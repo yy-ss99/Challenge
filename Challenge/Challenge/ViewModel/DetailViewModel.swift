@@ -30,7 +30,7 @@ final class DetailViewModel: ViewModelType {
     }
     
     func transform(input: Input) -> Output {
-        // 화면이 시작되면 안에 있던 item을 흘림
+        // item을 구독할 수 있게 스트림으로 바꾸어줌
         // 구독할떄마다 불러오니까 쉐어함 - 근데 나중에 구독한 애들까지 다 볼 수 있게 replay
         let item = Observable.just(item)
             .share(replay: 1)
