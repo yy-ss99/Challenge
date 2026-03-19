@@ -20,7 +20,6 @@ final class LoadingView: UIView {
     }
     
     private func configureUI() {
-        //backgroundColor = UIColor.systemBackground.withAlphaComponent(0.8)
         addSubview(activityIndicator)
         
         activityIndicator.snp.makeConstraints {
