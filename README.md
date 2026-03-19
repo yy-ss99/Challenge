@@ -2,12 +2,15 @@
 
 # 📌 소개
 
-iTunes API를 활용하여 음악, 앨범, 팟캐스트를 검색하고 상세 정보를 확인할 수 있는 iOS 앱입니다.
+iTunes API를 활용하여 음악, 앨범, 팟캐스트를 검색하고 상세 정보를 확인할 수 있는 iOS 앱입니다. 
+음악에 관해서는 미리듣기가 재생됩니다.
 RxSwift와 MVVM 패턴을 기반으로 비동기 데이터 흐름을 관리하고, 효율적인 UI 업데이트를 구현했습니다.
 
 |홈화면/디테일화면|검색화면/디테일화면|
 |---|---|
-|![리드미홈화면](https://github.com/user-attachments/assets/d5ab7d6b-6c20-4c8f-b397-cb89e3ebd937)|![리드미검색](https://github.com/user-attachments/assets/463ed507-69c0-475b-854b-4b1297158c79)|
+|![수정본홈](https://github.com/user-attachments/assets/383eb56f-e843-4d70-9b87-2e1826409ddf)|![수정본검색](https://github.com/user-attachments/assets/74a76490-d70f-4df2-9c9d-2afd0a90e10d)|
+
+
 
 
 
