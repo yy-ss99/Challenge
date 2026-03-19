@@ -33,6 +33,7 @@ final class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        searchView.collectionView.delegate = self
         configureUI()
         configureDataSource()
         bindViewModel()
@@ -166,5 +167,20 @@ extension SearchViewController {
         }
         // 넣어둔걸 적용함
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+}
+
+extension SearchViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        
+        let musicItem: MusicItem
+        switch item {
+        case .song(let selectedItem), .album(let selectedItem), .podcast(let selectedItem):
+            musicItem = selectedItem
+        }
+        
+        let detailViewController = DetailViewController(item: musicItem)
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
