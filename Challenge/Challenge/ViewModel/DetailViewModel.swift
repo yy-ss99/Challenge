@@ -32,7 +32,8 @@ final class DetailViewModel: ViewModelType {
     func transform(input: Input) -> Output {
         // item을 구독할 수 있게 스트림으로 바꾸어줌
         // 구독할떄마다 불러오니까 쉐어함 - 근데 나중에 구독한 애들까지 다 볼 수 있게 replay
-        let item = Observable.just(item)
+        let item = input.viewDidLoad
+            .map { _ in self.item }
             .share(replay: 1)
         
         return Output(
