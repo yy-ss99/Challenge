@@ -163,7 +163,18 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = sections[indexPath.section].items[indexPath.item]
-        let detailViewController = DetailViewController(item: item)
+        let detailType: DetailContentType
+        
+        // 앨범일 경우에만 뮤직비디오를 틀어주고 싶으니까 케이스로 나눠서 처리함/ 나누어서 타입도 아예 만들어줌
+        switch sections[indexPath.section].type {
+        case .featuredAlbum, .lofiAlbums, .happyPopAlbums:
+            detailType = .album
+        case .yhSongs, .tySongs:
+            detailType = .song
+        }
+        
+        // 디테일을 그릴수있게 item과 뮤직비디오를 띄울지 말지 결정하기 위해서 타입정보도 넘김
+        let detailViewController = DetailViewController(item: item, contentType: detailType)
         navigationController?.pushViewController(detailViewController, animated: true)
     }
     

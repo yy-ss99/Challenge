@@ -8,11 +8,33 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+// 어떤거 띄워줄지 케이스 나누어줌
+enum DetailContentType {
+    case song
+    case album
+    case podcast
+}
+
+// 미디어 그리는데 필요한 정보 모음
+struct DetailMedia {
+    let mediaURL: URL?
+    let showsVideo: Bool
+    let showsGuideText: Bool
+    let statusText: String
+}
+
 final class DetailViewModel: ViewModelType {
     private let item: MusicItem
+    private let contentType: DetailContentType
+    private let mockMusicVideoURL = URL(string: "https://video-ssl.itunes.apple.com/itunes-assets/Video221/v4/93/a4/a8/93a4a88a-980b-1267-211a-0664c0eeb72a/mzvf_14330022327392325610.1920w.h264lc.U.p.m4v")
     
-    init(item: MusicItem) {
+    // 디테일뷰에 필요한거 가져옴
+    init(
+        item: MusicItem,
+        contentType: DetailContentType
+    ) {
         self.item = item
+        self.contentType = contentType
     }
     
     struct Input {
@@ -23,7 +45,7 @@ final class DetailViewModel: ViewModelType {
         let title: Driver<String>
         let subtitle: Driver<String>
         let artworkURL: Driver<URL?>
-        let previewURL: Driver<URL?>
+        let media: Driver<DetailMedia>
         let genreText: Driver<String>
         let releaseDateText: Driver<String>
         let countryText: Driver<String>
@@ -57,9 +79,19 @@ final class DetailViewModel: ViewModelType {
                 }
                 .asDriver(onErrorJustReturn: nil),
             
-            previewURL: item
-                .map { $0.previewUrl.flatMap(URL.init(string:)) }
-                .asDriver(onErrorJustReturn: nil),
+            // 화면 뜨면 여기서 만들어서전달
+            media: input.viewDidLoad
+                .flatMapLatest { [weak self] _ -> Observable<DetailMedia> in
+                    guard let self else { return .empty() }
+                    return self.makeMedia()
+                        .asObservable()
+                }
+                .asDriver(onErrorJustReturn: DetailMedia(
+                    mediaURL: nil,
+                    showsVideo: false,
+                    showsGuideText: false,
+                    statusText: "이 항목은 자동 재생을 지원하지 않습니다."
+                )),
             
             genreText: item
                 .map { "장르: \($0.primaryGenreName ?? "정보 없음")" }
@@ -74,6 +106,45 @@ final class DetailViewModel: ViewModelType {
                 .map { "국가: \($0.country ?? "정보 없음")" }
                 .asDriver(onErrorJustReturn: "국가: 정보 없음")
         )
+    }
+    
+    // TODO: 앨범 주소 가져오기
+    
+    private func makeMedia() -> Single<DetailMedia> {
+        switch contentType {
+            // 앨범주소 넣어주고 값 넣어줌
+        case .album:
+            return .just(
+                DetailMedia(
+                    mediaURL: mockMusicVideoURL,
+                    showsVideo: true,
+                    showsGuideText: true,
+                    statusText: "\(item.collectionName ?? "앨범") 자동 재생 중"
+                )
+            )
+            // 앨범은 제외하고는 프리뷰 URL 있을경우
+        case .song, .podcast:
+            let previewURL = item.previewUrl.flatMap(URL.init(string:))
+            if previewURL != nil {
+                return .just(
+                    DetailMedia(
+                        mediaURL: previewURL,
+                        showsVideo: false,
+                        showsGuideText: true,
+                        statusText: "미리듣기 자동 재생 중"
+                    )
+                )
+            } else {
+                return .just(
+                    DetailMedia(
+                        mediaURL: nil,
+                        showsVideo: false,
+                        showsGuideText: false,
+                        statusText: "이 항목은 자동 재생을 지원하지 않습니다."
+                    )
+                )
+            }
+        }
     }
     
     private func formatReleaseDate(_ dateString: String?) -> String {

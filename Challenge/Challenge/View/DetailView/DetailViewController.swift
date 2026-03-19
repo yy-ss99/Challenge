@@ -16,9 +16,10 @@ final class DetailViewController: UIViewController {
     private let viewModel: DetailViewModel
     
     private var player: AVPlayer?
+    private var playerLayer: AVPlayerLayer?
     
-    init(item: MusicItem) {
-        self.viewModel = DetailViewModel(item: item)
+    init(item: MusicItem, contentType: DetailContentType) {
+        self.viewModel = DetailViewModel(item: item, contentType: contentType)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -39,6 +40,12 @@ final class DetailViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         player?.pause()
+    }
+    
+    // 오토레이아웃이 안먹어서 이렇게 지정해줘야함
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        playerLayer?.frame = detailView.videoContainerView.bounds
     }
     
     // VC 없어질때 같이 지워줌
@@ -73,7 +80,7 @@ final class DetailViewController: UIViewController {
         
         output.artworkURL
             .drive(with: self) { detailVC, url in
-                detailVC.detailView.configureArtwork(with: url)
+                detailVC.detailView.configureAlbumCover(with: url)
             }
             .disposed(by: disposeBag)
         
@@ -89,27 +96,43 @@ final class DetailViewController: UIViewController {
             .drive(detailView.countryLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // 미리듣기 있는지 확인
-        // 미리듣기 재생
-        output.previewURL
+        output.media
             .drive(with: self) { detailVC, url in
-                detailVC.detailView.updatePreviewState(hasPreview: url != nil)
-                detailVC.playPreviewIfNeeded(url: url)
+                detailVC.detailView.updateMediaState(
+                    showsVideo: url.showsVideo,
+                    showsGuideText: url.showsGuideText,
+                    statusText: url.statusText
+                )
+                detailVC.playMediaIfNeeded(media: url)
             }
             .disposed(by: disposeBag)
     }
     
-    private func playPreviewIfNeeded(url: URL?) {
-        // 기존에 있던 플레이어는 없애줌
+    private func playMediaIfNeeded(media: DetailMedia) {
+        // 전에 영상 완전히 정리함
         player?.pause()
         player = nil
+        playerLayer?.removeFromSuperlayer()
+        playerLayer = nil
         
-        // url없으면 아무것도 안하기
-        guard let url else { return }
+        // URL 없으면 return
+        guard let url = media.mediaURL else { return }
         
-        // 있으면 자동 재생
+        // AVPlayer 생성
         let player = AVPlayer(url: url)
         self.player = player
+        
+        // 비디오 일때만 아예 레이어 추가
+        if media.showsVideo {
+            // 플레이어 만들고
+            let playerLayer = AVPlayerLayer(player: player)
+            playerLayer.videoGravity = .resizeAspectFill // 화면 채우기
+            playerLayer.frame = detailView.videoContainerView.bounds // 직접 사이즈 지정해줘야함
+            // 만든 플레이어 넣어줌
+            detailView.videoContainerView.layer.addSublayer(playerLayer)
+            self.playerLayer = playerLayer
+        }
+        // 재생
         player.play()
     }
 }

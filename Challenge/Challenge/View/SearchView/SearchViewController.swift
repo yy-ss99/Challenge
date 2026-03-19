@@ -177,14 +177,23 @@ extension SearchViewController {
 extension SearchViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
-        
+        // 종류를 같이 넘겨서 디테일뷰에 어떤거 띄워줄지 결정할 수 있게 함
         let musicItem: MusicItem
+        let detailType: DetailContentType
+        
         switch item {
-        case .song(let selectedItem), .album(let selectedItem), .podcast(let selectedItem):
+        case .song(let selectedItem):
             musicItem = selectedItem
+            detailType = .song
+        case .album(let selectedItem):
+            musicItem = selectedItem
+            detailType = .album
+        case .podcast(let selectedItem):
+            musicItem = selectedItem
+            detailType = .podcast
         }
         
-        let detailViewController = DetailViewController(item: musicItem)
+        let detailViewController = DetailViewController(item: musicItem, contentType: detailType)
         navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
