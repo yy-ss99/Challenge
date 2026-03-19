@@ -17,6 +17,7 @@ enum ITunesEndpoint {
     case searchSongs(term: String)
     case searchAlbums(term: String)
     case searchPodcasts(term: String)
+    case searchMusicVideos(term: String)
     
     static let baseURL = "https://itunes.apple.com/search"
     
@@ -102,6 +103,15 @@ enum ITunesEndpoint {
                 URLQueryItem(name: "entity", value: "podcast"),
                 URLQueryItem(name: "limit", value: "20"),
                 URLQueryItem(name: "country", value: "KR")
+            ]
+            
+        case .searchMusicVideos(let term):
+            return [
+                URLQueryItem(name: "term", value: term),
+                URLQueryItem(name: "media", value: "music"),
+                URLQueryItem(name: "entity", value: "musicVideo"),
+                URLQueryItem(name: "limit", value: "20"),
+                URLQueryItem(name: "country", value: "US")
             ]
         }
     }
