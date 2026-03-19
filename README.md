@@ -277,7 +277,5 @@ input.viewDidLoad
 * 무한 스크롤 (pagination) 구현해보기
 * 검색 결과 캐싱
 * 관련 뮤직비디오 재생
-* UISearchBarController 사용
-
 ---
 
