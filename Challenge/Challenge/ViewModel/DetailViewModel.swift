@@ -29,7 +29,7 @@ struct MatchedMusicVideo {
 }
 
 final class DetailViewModel: ViewModelType {
-    private let item: MusicItem
+    private let musicItem: MusicItem
     private let contentType: DetailContentType
     private let networkService: NetworkService
     
@@ -39,7 +39,7 @@ final class DetailViewModel: ViewModelType {
         contentType: DetailContentType,
         networkService: NetworkService = NetworkManager()
     ) {
-        self.item = item
+        self.musicItem = item
         self.contentType = contentType
         self.networkService = networkService
     }
@@ -61,7 +61,7 @@ final class DetailViewModel: ViewModelType {
     func transform(input: Input) -> Output {
         // item을 구독할 수 있게 스트림으로 바꾸어줌
         let item = input.viewDidLoad
-            .map { _ in self.item }
+            .map { [musicItem] in musicItem }
             .asDriver(onErrorDriveWith: .empty())
         
         return Output(
@@ -84,8 +84,8 @@ final class DetailViewModel: ViewModelType {
             
             // 화면 뜨면 여기서 만들어서전달
             media: input.viewDidLoad
-                .flatMapLatest { [weak self] _ -> Observable<DetailMedia> in
-                    guard let self else { return .empty() }
+                .withUnretained(self)
+                .flatMapLatest { `self`, _ -> Observable<DetailMedia> in
                     return self.makeMedia()
                         .asObservable()
                 }
@@ -100,8 +100,9 @@ final class DetailViewModel: ViewModelType {
                 .map { "장르: \($0.primaryGenreName ?? "정보 없음")" },
             
             releaseDateText: item
-                .map { [weak self] in
-                    "발매일: \(self?.formatReleaseDate($0.releaseDate) ?? "정보 없음")"
+                .withUnretained(self)
+                .map {
+                    "발매일: \($0.formatReleaseDate($1.releaseDate) ?? "정보 없음")"
                 },
             
             countryText: item
