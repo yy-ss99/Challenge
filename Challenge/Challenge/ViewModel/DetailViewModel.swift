@@ -100,9 +100,8 @@ final class DetailViewModel: ViewModelType {
                 .map { "장르: \($0.primaryGenreName ?? "정보 없음")" },
             
             releaseDateText: item
-                .withUnretained(self)
-                .map {
-                    "발매일: \($0.formatReleaseDate($1.releaseDate) ?? "정보 없음")"
+                .map { musicItem in
+                    "발매일: \(self.formatReleaseDate(musicItem.releaseDate))"
                 },
             
             countryText: item
@@ -135,7 +134,7 @@ final class DetailViewModel: ViewModelType {
                 }
             
         case .song, .podcast:
-            let previewURL = item.previewUrl.flatMap(URL.init(string:))
+            let previewURL = musicItem.previewUrl.flatMap(URL.init(string:))
             if previewURL != nil {
                 return .just(
                     DetailMedia(
@@ -159,7 +158,7 @@ final class DetailViewModel: ViewModelType {
     }
     
     private func fetchRelatedMusicVideo() -> Single<MatchedMusicVideo> {
-        let searchTerm = [item.artistName, item.collectionName]
+        let searchTerm = [musicItem.artistName, musicItem.collectionName]
             .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
             .joined(separator: " ")
@@ -177,8 +176,8 @@ final class DetailViewModel: ViewModelType {
             endpoint: .searchMusicVideos(term: term)
         )
         
-        return response.map { [item] response in
-            let artistName = item.artistName?.lowercased()
+        return response.map { [musicItem] response in
+            let artistName = musicItem.artistName?.lowercased()
             
             let exactArtistMatch = response.results.first { musicVideo in
                 guard let previewURL = musicVideo.previewUrl, !previewURL.isEmpty else {
